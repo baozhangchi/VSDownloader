@@ -1,0 +1,140 @@
+﻿<Window
+    x:Class="VSDownloader.Views.ShellView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:s="https://github.com/canton7/Stylet"
+    xmlns:templateSelectors="clr-namespace:VSDownloader.TemplateSelectors"
+    xmlns:vm="clr-namespace:VSDownloader.ViewModels"
+    Title="ShellView"
+    Width="800"
+    Height="450"
+    d:DataContext="{d:DesignInstance vm:ShellViewModel}"
+    Background="{DynamicResource MaterialDesignPaper}"
+    Style="{StaticResource MaterialDesignWindow}"
+    TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+    mc:Ignorable="d">
+    <Window.Resources>
+        <templateSelectors:ComponentItemTemplateSelector x:Key="ComponentItemTemplateSelector">
+            <templateSelectors:ComponentItemTemplateSelector.CanSelectTemplate>
+                <HierarchicalDataTemplate DataType="{x:Type vm:ComponentItem}" ItemsSource="{Binding Path=Children}">
+                    <CheckBox
+                        Content="{Binding Path=Title}"
+                        IsChecked="{Binding Path=IsSelected, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                        ToolTip="{Binding Path=Description}" />
+                </HierarchicalDataTemplate>
+            </templateSelectors:ComponentItemTemplateSelector.CanSelectTemplate>
+            <templateSelectors:ComponentItemTemplateSelector.CannotSelectTemplate>
+                <HierarchicalDataTemplate DataType="{x:Type vm:ComponentItem}" ItemsSource="{Binding Path=Children}">
+                    <Label
+                        Margin="0"
+                        Content="{Binding Path=Title}"
+                        ToolTip="{Binding Path=Description}" />
+                </HierarchicalDataTemplate>
+            </templateSelectors:ComponentItemTemplateSelector.CannotSelectTemplate>
+        </templateSelectors:ComponentItemTemplateSelector>
+    </Window.Resources>
+    <materialDesign:DialogHost IsOpen="{Binding Path=IsBusy}">
+        <materialDesign:DialogHost.DialogContent>
+            <StackPanel Margin="5">
+                <ProgressBar
+                    Width="50"
+                    Height="50"
+                    IsIndeterminate="True"
+                    Style="{StaticResource MaterialDesignCircularProgressBar}"
+                    Value="0" />
+                <TextBlock Margin="5" Text="{Binding Path=BusyContent}" />
+            </StackPanel>
+        </materialDesign:DialogHost.DialogContent>
+        <materialDesign:DialogHost.Content>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Label Content="VS版本：" />
+                <ComboBox
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    DisplayMemberPath="Name"
+                    ItemsSource="{Binding Path=VSItems}"
+                    SelectedIndex="0"
+                    SelectedItem="{Binding Path=SelectedItem, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                <Button
+                    Grid.Row="0"
+                    Grid.Column="2"
+                    Command="{s:Action Method=LoadComponentsAsync}"
+                    Content="加载" />
+
+                <Label
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Content="保存路径：" />
+                <TextBox
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Text="{Binding Path=DownloadFolder, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                <Button
+                    Grid.Row="1"
+                    Grid.Column="2"
+                    Command="{s:Action Method=SelectDownloadFolder}"
+                    Content="浏览" />
+
+                <Grid
+                    Grid.Row="2"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="3*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TreeView
+                        Grid.Column="0"
+                        ItemTemplateSelector="{StaticResource ComponentItemTemplateSelector}"
+                        ItemsSource="{Binding Path=Components}" />
+                    <ListBox
+                        x:Name="LanguagesSelector"
+                        Grid.Column="1"
+                        ItemsSource="{Binding Path=Languages}"
+                        Loaded="{s:Action Method=LanguagesSelectorLoaded}"
+                        SelectionMode="Multiple">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <CheckBox Content="{Binding Path=Title}" IsChecked="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}, Path=IsSelected, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+
+                <StackPanel
+                    Grid.Row="3"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="3"
+                    HorizontalAlignment="Center"
+                    Orientation="Horizontal">
+                    <Button
+                        Command="{s:Action Method=Download}"
+                        CommandParameter="{Binding ElementName=LanguagesSelector, Path=SelectedItems}"
+                        Content="下载" />
+                    <Button
+                        Command="{s:Action Method=Update}"
+                        Content="更新"
+                        Visibility="{Binding RelativeSource={RelativeSource Mode=Self}, Path=IsEnabled, Converter={x:Static s:BoolToVisibilityConverter.Instance}}" />
+                    <Button
+                        Command="{s:Action Method=Clean}"
+                        Content="清理"
+                        Visibility="{Binding RelativeSource={RelativeSource Mode=Self}, Path=IsEnabled, Converter={x:Static s:BoolToVisibilityConverter.Instance}}" />
+                </StackPanel>
+            </Grid>
+        </materialDesign:DialogHost.Content>
+    </materialDesign:DialogHost>
+</Window>

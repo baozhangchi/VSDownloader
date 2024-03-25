@@ -1,0 +1,58 @@
+[
+  {
+    "Title": "捷克语",
+    "Key": "Cs-cz"
+  },
+  {
+    "Title": "德语",
+    "Key": "De-de"
+  },
+  {
+    "Title": "英语",
+    "Key": "En-us"
+  },
+  {
+    "Title": "西班牙语",
+    "Key": "Es-es"
+  },
+  {
+    "Title": "法语",
+    "Key": "Fr-fr"
+  },
+  {
+    "Title": "意大利语",
+    "Key": "It-it"
+  },
+  {
+    "Title": "日语",
+    "Key": "Jp-jp"
+  },
+  {
+    "Title": "韩语",
+    "Key": "Ko-kr"
+  },
+  {
+    "Title": "波兰语",
+    "Key": "Pl-pl"
+  },
+  {
+    "Title": "葡萄牙语 - 巴西",
+    "Key": "Pt-br"
+  },
+  {
+    "Title": "俄语",
+    "Key": "Ru-ru"
+  },
+  {
+    "Title": "土耳其语",
+    "Key": "Tr-tr"
+  },
+  {
+    "Title": "简体中文",
+    "Key": "Zh-cn"
+  },
+  {
+    "Title": "繁体中文",
+    "Key": "Zh-tw"
+  }
+]

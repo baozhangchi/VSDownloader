@@ -3,11 +3,7 @@ using System.IO.Compression;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
-using Avalonia.InternalCheat;
 using HtmlAgilityPack;
-using ReactiveUI;
-using Russkyc.Messaging;
 
 namespace VSDownloader;
 
@@ -23,7 +19,7 @@ internal class VSHelper
         await response.CopyToAsync(fileStream);
     }
 
-    public static async Task<List<WorkloadInfo>> GetWorkloads(BootstrapperInfo bootstrapperInfo)
+    public static async Task<List<Models.WorkloadInfo>> GetWorkloads(Models.BootstrapperInfo bootstrapperInfo)
     {
         var url =
             $"https://learn.microsoft.com/zh-cn/visualstudio/install/workload-component-id-{Path.GetFileNameWithoutExtension(bootstrapperInfo.DownloaderUrl).Replace("_", "-")}?view=visualstudio&viewFallbackFrom=vs-{GetVsVersion(bootstrapperInfo)}&preserve-view=true";
@@ -32,7 +28,7 @@ internal class VSHelper
         var doc = await htmlWeb.LoadFromWebAsync(url);
         var root = doc.DocumentNode.SelectSingleNode("//div[@data-moniker=\"visualstudio\"]");
         var headers = root.SelectNodes("h2");
-        var workloads = new List<WorkloadInfo>();
+        var workloads = new List<Models.WorkloadInfo>();
         foreach (var header in headers)
         {
             var title = header.InnerText;
@@ -43,7 +39,7 @@ internal class VSHelper
             }
 
             var id = next.InnerText.Replace("ID：", "").Trim();
-            var workload = new WorkloadInfo(id, title, bootstrapperInfo);
+            var workload = new Models.WorkloadInfo(id, title, bootstrapperInfo);
             while (next.Name != "table")
             {
                 next = next.NextSibling;
@@ -56,7 +52,7 @@ internal class VSHelper
                 var componentId = cells[0].InnerText.Trim();
                 var componentName = cells[1].InnerText.Trim();
                 var isRequired = cells.Count < 4 ? "自选" : cells[3].InnerText.Trim();
-                workload.Components.Add(new ComponentInfo(componentId, componentName, isRequired == "必填",
+                workload.Components.Add(new Models.ComponentInfo(componentId, componentName, isRequired == "必填",
                     isRequired == "推荐", workload));
             }
 
@@ -79,7 +75,7 @@ internal class VSHelper
         return workloads;
     }
 
-    public static async Task<List<LanguageInfo>> GetLanguages()
+    public static async Task<List<Models.LanguageInfo>> GetLanguages()
     {
         var web = new HtmlWeb();
         web.OverrideEncoding = Encoding.UTF8;
@@ -92,18 +88,18 @@ internal class VSHelper
             next = next.NextSibling;
         }
 
-        var languages = new List<LanguageInfo>();
+        var languages = new List<Models.LanguageInfo>();
         var rows = next.SelectNodes("tbody/tr");
         foreach (var row in rows)
         {
             var cells = row.SelectNodes("td");
-            languages.Add(new LanguageInfo(cells[0].InnerText.Trim(), cells[1].InnerText.Trim()));
+            languages.Add(new Models.LanguageInfo(cells[0].InnerText.Trim(), cells[1].InnerText.Trim()));
         }
 
         return languages;
     }
 
-    private static string GetVsVersion(BootstrapperInfo bootstrapperInfo)
+    private static string GetVsVersion(Models.BootstrapperInfo bootstrapperInfo)
     {
         if (bootstrapperInfo.DownloaderUrl.Contains("/18/"))
         {
@@ -124,7 +120,7 @@ internal class VSHelper
     }
 
     public static async Task DownloadVs(string bootstrapperFileName, string outputFolderPath,
-        BootstrapperInfo selectedBootstrapperInfo, List<LanguageInfo> languages)
+        Models.BootstrapperInfo selectedBootstrapperInfo, List<Models.LanguageInfo> languages)
     {
         var builder = new StringBuilder();
         builder.Append($" --layout \"{outputFolderPath}\" --includeRecommended");
@@ -185,7 +181,7 @@ internal class VSHelper
         }
     }
 
-    public static List<BootstrapperInfo> LoadBootstrapperInfos()
+    public static List<Models.BootstrapperInfo> LoadBootstrapperInfos()
     {
         var assembly = Assembly.GetExecutingAssembly();
         var resourcePath = $"{typeof(VSHelper).Namespace}.Resources.BootstrapperInfos";
@@ -197,81 +193,8 @@ internal class VSHelper
         using var gzip = new GZipStream(stream, CompressionMode.Decompress);
         using var reader = new StreamReader(gzip, Encoding.UTF8);
         var originContent = reader.ReadToEnd();
-        return JsonSerializer.Deserialize<List<BootstrapperInfo>>(originContent,
-            JsonGenerationContext.Default.ListBootstrapperInfo)!;
+        return JsonSerializer.Deserialize<List<Models.BootstrapperInfo>>(originContent,
+            Models.JsonGenerationContext.Default.ListBootstrapperInfo)!;
         ;
     }
-}
-
-public partial class BootstrapperInfo(string title, string downloaderUrl) : ReactiveObject
-{
-    public string Title { get; } = title;
-    public string DownloaderUrl { get; } = downloaderUrl;
-
-    [ObservableProperty] public partial List<WorkloadInfo> Workloads { get; set; } = new();
-
-    public List<ComponentInfo> Components => Workloads.SelectMany(x => x.Components).ToList();
-}
-
-public partial class WorkloadInfo(string id, string title, BootstrapperInfo bootstrapperInfo) : ReactiveObject
-{
-    public List<ComponentInfo> Components { get; } = new();
-    public string Id { get; } = id;
-    public string Title { get; } = title;
-
-    public bool IsRequired => Components.All(x => x.IsRequired);
-
-    public bool IsEnabled => !IsRequired;
-
-    [ObservableProperty] public partial bool IsSelected { get; set; } = false;
-    public BootstrapperInfo BootstrapperInfo { get; } = bootstrapperInfo;
-
-    partial void OnIsSelectedChanged()
-    {
-        WeakReferenceMessenger.Default.Send(this);
-    }
-}
-
-public partial class ComponentInfo(string id, string title, bool isRequired, bool isSuggester, WorkloadInfo owner)
-    : ReactiveObject
-{
-    public string Id { get; init; } = id;
-    public string Title { get; init; } = title;
-    public bool IsRequired { get; init; } = isRequired;
-
-    public bool IsEnabled { get; set; } = true;
-    public bool IsSuggester { get; set; } = isSuggester;
-    public WorkloadInfo Owner { get; } = owner;
-
-    [ObservableProperty] public partial bool IsSelected { get; set; }
-
-    partial void OnIsSelectedChanged()
-    {
-        WeakReferenceMessenger.Default.Send(this);
-    }
-}
-
-public partial class LanguageInfo(string id, string title) : ReactiveObject
-{
-    public string Id { get; } = id;
-    public string Title { get; } = title;
-
-    [ObservableProperty] public partial bool IsSelected { get; set; } = false;
-}
-
-[JsonSerializable(typeof(List<BootstrapperInfo>))]
-[JsonSerializable(typeof(LanguageInfo))]
-[JsonSerializable(typeof(LayoutConfig))]
-[JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
-    PropertyNameCaseInsensitive = true)]
-internal partial class JsonGenerationContext : JsonSerializerContext
-{
-}
-
-public class LayoutConfig
-{
-    public string? Version { get; set; }
-    public List<string> Components { get; set; } = new();
-    public List<string> Extensions { get; set; } = new();
-    public List<string> Languages { get; set; } = new();
 }

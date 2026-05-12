@@ -5,6 +5,7 @@
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:vsDownloader="clr-namespace:VSDownloader"
 		xmlns:dialogHostAvalonia="clr-namespace:DialogHostAvalonia;assembly=DialogHost.Avalonia"
+		xmlns:models="clr-namespace:VSDownloader.Models"
 		mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:CompileBindings="True"
 		x:Class="VSDownloader.Views.ShellView" Width="700" Height="400"
@@ -44,12 +45,12 @@
 						<TreeView ItemsSource="{Binding Path=SelectedBootstrapperInfo.Workloads}"
 								  SelectionMode="Multiple">
 							<TreeView.DataTemplates>
-								<TreeDataTemplate DataType="vsDownloader:WorkloadInfo"
+								<TreeDataTemplate DataType="models:WorkloadInfo"
 												  ItemsSource="{Binding Path=Components}">
 									<CheckBox Content="{Binding Path=Title}" IsEnabled="{Binding Path=IsEnabled}"
 											  IsChecked="{Binding Path=IsSelected,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
 								</TreeDataTemplate>
-								<DataTemplate DataType="vsDownloader:ComponentInfo">
+								<DataTemplate DataType="models:ComponentInfo">
 									<CheckBox IsEnabled="{Binding Path=IsEnabled}"
 											  IsChecked="{Binding Path=IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
 										<StackPanel Orientation="Horizontal">

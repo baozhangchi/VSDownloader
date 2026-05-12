@@ -21,6 +21,10 @@
 		<BuiltInComInteropSupport>false</BuiltInComInteropSupport>
 
 		<OptimizationPreference>Size</OptimizationPreference>
+
+		<PlatformTarget>x64</PlatformTarget>
+
+		<AssemblyVersion>1.0.2.0</AssemblyVersion>
 	</PropertyGroup>
 	
 	<!-- 核心修复：不让 AOT 裁剪 Avalonia -->
@@ -41,7 +45,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Models\" />
 		<AvaloniaResource Include="Assets\**" />
 		<AvaloniaXaml Remove="Properties\**" />
 		<Compile Remove="Properties\**" />

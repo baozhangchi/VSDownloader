@@ -7,6 +7,7 @@ using Avalonia.Platform.Storage;
 using ReactiveUI;
 using Russkyc.Messaging;
 using VSDownloader.Extensions;
+using VSDownloader.Models;
 
 namespace VSDownloader.ViewModels;
 
@@ -26,8 +27,8 @@ public partial class ShellViewModel : ViewModelBase
         Justification = "<Pending>")]
     public ShellViewModel()
     {
-        WeakReferenceMessenger.Default.Register<ShellViewModel, ComponentInfo>(this, HandleComponentSelectedChanged);
-        WeakReferenceMessenger.Default.Register<ShellViewModel, WorkloadInfo>(this, HandleWorkloadSelectedChanged);
+        WeakReferenceMessenger.Default.Register<ShellViewModel, Models.ComponentInfo>(this, HandleComponentSelectedChanged);
+        WeakReferenceMessenger.Default.Register<ShellViewModel, Models.WorkloadInfo>(this, HandleWorkloadSelectedChanged);
         //var buffer = Resources.BootstrapperInfos;
         //using (var ms = new MemoryStream(buffer))
         //{
@@ -40,21 +41,21 @@ public partial class ShellViewModel : ViewModelBase
         //}
         BootstrapperInfos = VSHelper.LoadBootstrapperInfos();
 
-        _canLoad = this.WhenAnyValue<ShellViewModel, bool, BootstrapperInfo?>(x => x.SelectedBootstrapperInfo,
+        _canLoad = this.WhenAnyValue<ShellViewModel, bool, Models.BootstrapperInfo?>(x => x.SelectedBootstrapperInfo,
             x => x != null);
         _canExportConfig =
-            this.WhenAnyValue<ShellViewModel, bool, BootstrapperInfo?>(x => x.SelectedBootstrapperInfo, x => x != null);
+            this.WhenAnyValue<ShellViewModel, bool, Models.BootstrapperInfo?>(x => x.SelectedBootstrapperInfo, x => x != null);
         _canDoDownload = this.WhenAnyValue(x => x.SelectedBootstrapperInfo, x => x.OutputFolderPath,
             (info, path) => info != null && !string.IsNullOrEmpty(path));
         SelectedBootstrapperInfo = BootstrapperInfos.FirstOrDefault();
         VSHelper.GetLanguages().ContinueWith(task => { Languages = task.Result; });
     }
 
-    [ObservableProperty] public partial List<LanguageInfo> Languages { get; set; } = new();
+    [ObservableProperty] public partial List<Models.LanguageInfo> Languages { get; set; } = new();
 
-    [ObservableProperty] public partial List<BootstrapperInfo> BootstrapperInfos { get; set; }
+    [ObservableProperty] public partial List<Models.BootstrapperInfo> BootstrapperInfos { get; set; }
 
-    [ObservableProperty] public partial BootstrapperInfo? SelectedBootstrapperInfo { get; set; }
+    [ObservableProperty] public partial Models.BootstrapperInfo? SelectedBootstrapperInfo { get; set; }
 
     [ObservableProperty] public partial bool IsLoading { get; set; }
 
@@ -79,7 +80,7 @@ public partial class ShellViewModel : ViewModelBase
         }
     }
 
-    private void HandleWorkloadSelectedChanged(ShellViewModel recipient, WorkloadInfo message)
+    private void HandleWorkloadSelectedChanged(ShellViewModel recipient, Models.WorkloadInfo message)
     {
         if (message.IsSelected)
         {
@@ -103,7 +104,7 @@ public partial class ShellViewModel : ViewModelBase
         }
     }
 
-    private void HandleComponentSelectedChanged(ShellViewModel recipient, ComponentInfo message)
+    private void HandleComponentSelectedChanged(ShellViewModel recipient, Models.ComponentInfo message)
     {
         if (message.IsSelected)
         {
@@ -124,7 +125,7 @@ public partial class ShellViewModel : ViewModelBase
         }
     }
 
-    async partial void OnSelectedBootstrapperInfoChanged(BootstrapperInfo? value)
+    async partial void OnSelectedBootstrapperInfoChanged(Models.BootstrapperInfo? value)
     {
         if (value != null && !value.Workloads.Any())
         {
@@ -166,7 +167,7 @@ public partial class ShellViewModel : ViewModelBase
         using var reader = new StreamReader(stream);
         var configContent = await reader.ReadToEndAsync();
         var config =
-            JsonSerializer.Deserialize<LayoutConfig>(configContent, JsonGenerationContext.Default.LayoutConfig)!;
+            JsonSerializer.Deserialize<LayoutConfig>(configContent, Models.JsonGenerationContext.Default.LayoutConfig)!;
         var selectedComponents = config.Components;
         foreach (var workload in SelectedBootstrapperInfo!.Workloads.Where(workload => !workload.IsRequired))
         {
@@ -209,7 +210,7 @@ public partial class ShellViewModel : ViewModelBase
             };
             await using var stream = await file.OpenWriteAsync();
             await using var writer = new StreamWriter(stream);
-            await writer.WriteAsync(JsonSerializer.Serialize(data, JsonGenerationContext.Default.LayoutConfig));
+            await writer.WriteAsync(JsonSerializer.Serialize(data, Models.JsonGenerationContext.Default.LayoutConfig));
             await writer.FlushAsync();
             await MessageBoxViewModel.Show("导出成功", showCancelButton: false);
         }

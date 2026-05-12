@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/Avalonia.InternalCheat/">
+    <Project Path="Avalonia.InternalCheat/src/Avalonia.InternalCheat/Avalonia.InternalCheat.csproj" />
+  </Folder>
+  <Folder Name="/libs/">
+    <File Path="libs/av_libglesv2.lib" />
+    <File Path="libs/libHarfBuzzSharp.lib" />
+    <File Path="libs/skia.lib" />
+    <File Path="libs/SkiaSharp.lib" />
+  </Folder>
+  <Project Path="VSDownloader/VSDownloader.csproj" />
+</Solution>

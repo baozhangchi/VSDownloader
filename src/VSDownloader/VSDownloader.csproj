@@ -1,0 +1,88 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net10.0-windows7.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
+		<AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+		<ApplicationIcon>Assets\logo.ico</ApplicationIcon>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
+	<PropertyGroup>
+		<!-- Only needed for the main executable project -->
+		<PublishAot>true</PublishAot>
+
+		<!-- Add to all projects/libraries in use, to ensure AOT compatibility -->
+		<IsAotCompatible>true</IsAotCompatible>
+
+		<VerifyReferenceAotCompatibility>true</VerifyReferenceAotCompatibility>
+
+		<!-- Necessary before Avalonia 12.0, was used for accessiblity APIs -->
+		<BuiltInComInteropSupport>false</BuiltInComInteropSupport>
+
+		<OptimizationPreference>Size</OptimizationPreference>
+	</PropertyGroup>
+	
+	<!-- 核心修复：不让 AOT 裁剪 Avalonia -->
+	<ItemGroup>
+		<TrimmerRootAssembly Include="Avalonia" />
+		<TrimmerRootAssembly Include="Avalonia.Desktop" />
+		<TrimmerRootAssembly Include="Avalonia.Themes.Fluent" />
+		<TrimmerRootAssembly Include="ReactiveUI.Avalonia" />
+		<TrimmerRootAssembly Include="System.Xml.Serialization" />
+		<TrimmerRootAssembly Include="VSDownloader" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<DirectPInvoke Include="libHarfBuzzSharp" />
+		<DirectPInvoke Include="libSkiaSharp" />
+		<DirectPInvoke Include="av_libglesv2" />
+		<NativeLibrary Include="../libs/*.lib" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="Models\" />
+		<AvaloniaResource Include="Assets\**" />
+		<AvaloniaXaml Remove="Properties\**" />
+		<Compile Remove="Properties\**" />
+		<EmbeddedResource Remove="Properties\**" />
+		<NativeLibrary Remove="Properties\**" />
+		<None Remove="Properties\**" />
+		<None Remove="Resources\BootstrapperInfos" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="Assets\logo.ico" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="Resources\BootstrapperInfos" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Avalonia" Version="12.0.3" />
+		<PackageReference Include="Avalonia.Desktop" Version="12.0.3" />
+		<PackageReference Include="Avalonia.Themes.Fluent" Version="12.0.3" />
+		<PackageReference Include="Avalonia.Fonts.Inter" Version="12.0.3" />
+		<PackageReference Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.1">
+			<IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
+			<PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="DialogHost.Avalonia" Version="0.12.2" />
+		<PackageReference Include="HtmlAgilityPack" Version="1.12.4" />
+		<PackageReference Include="ReactiveUI.Avalonia" Version="12.0.1" />
+		<PackageReference Include="HotAvalonia" Version="3.1.0" PrivateAssets="All" Publish="True" />
+		<PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="12.0.3" PrivateAssets="All" />
+		<PackageReference Include="Russkyc.Messaging" Version="1.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Avalonia.InternalCheat\src\Avalonia.InternalCheat\Avalonia.InternalCheat.csproj" OutputItemType="Analyzer" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="Views\ShellView.axaml.cs">
+			<DependentUpon>ShellView.axaml</DependentUpon>
+		</Compile>
+	</ItemGroup>
+</Project>

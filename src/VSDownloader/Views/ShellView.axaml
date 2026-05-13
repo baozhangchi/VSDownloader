@@ -7,7 +7,7 @@
 		xmlns:dialogHostAvalonia="clr-namespace:DialogHostAvalonia;assembly=DialogHost.Avalonia"
 		xmlns:models="clr-namespace:VSDownloader.Models"
 		mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        x:CompileBindings="True"
+		x:CompileBindings="True"
 		x:Class="VSDownloader.Views.ShellView" Width="700" Height="400"
 		x:DataType="vm:ShellViewModel"
 		Icon="/Assets/logo.ico"
@@ -18,78 +18,74 @@
 		to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
 		<vm:ShellViewModel />
 	</Design.DataContext>
-    <dialogHostAvalonia:DialogHost CloseOnClickAway="True">
-        <dialogHostAvalonia:DialogHost.DialogContent>
-            <!-- put your dialog content here-->
-        </dialogHostAvalonia:DialogHost.DialogContent>
-        
-	<Grid ColumnDefinitions="Auto * Auto" RowDefinitions="Auto Auto * Auto">
-		<Label Grid.Row="0" Grid.Column="0" Content="VS 版本：" />
-		<ComboBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" ItemsSource="{Binding Path=BootstrapperInfos}"
-				  SelectedItem="{Binding Path=SelectedBootstrapperInfo,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}">
-			<ComboBox.ItemTemplate>
-				<DataTemplate>
-					<TextBlock Text="{Binding Path=Title}" />
-				</DataTemplate>
-			</ComboBox.ItemTemplate>
-		</ComboBox>
-		<Label Grid.Row="1" Grid.Column="0" Content="下载目录：" />
-		<TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=OutputFolderPath}" IsReadOnly="True"
-				 IsEnabled="False" />
-		<Button Grid.Row="1" Grid.Column="2" Command="{Binding Path=SelectFolderCommand}">…</Button>
-		<DockPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" VerticalSpacing="8">
-			<!--<TextBox DockPanel.Dock="Top" />-->
-			<TabControl>
-				<TabItem Header="负载与组件">
-					<Grid>
-						<TreeView ItemsSource="{Binding Path=SelectedBootstrapperInfo.Workloads}"
-								  SelectionMode="Multiple">
-							<TreeView.DataTemplates>
-								<TreeDataTemplate DataType="models:WorkloadInfo"
-												  ItemsSource="{Binding Path=Components}">
-									<CheckBox Content="{Binding Path=Title}" IsEnabled="{Binding Path=IsEnabled}"
-											  IsChecked="{Binding Path=IsSelected,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
-								</TreeDataTemplate>
-								<DataTemplate DataType="models:ComponentInfo">
-									<CheckBox IsEnabled="{Binding Path=IsEnabled}"
-											  IsChecked="{Binding Path=IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-										<StackPanel Orientation="Horizontal">
-											<TextBlock Text="{Binding Path=Title}" />
-											<TextBlock Text="必选" IsVisible="{Binding Path=IsRequired}" />
-											<TextBlock Text="推荐" IsVisible="{Binding Path=IsSuggester}" />
-										</StackPanel>
-									</CheckBox>
-								</DataTemplate>
-							</TreeView.DataTemplates>
-						</TreeView>
-						<Border Background="#30000000" IsVisible="{Binding Path=IsLoading}">
-							<StackPanel VerticalAlignment="Center">
-								<ProgressBar IsIndeterminate="True" MaxWidth="200" />
-								<TextBlock Text="加载中……" HorizontalAlignment="Center" />
-							</StackPanel>
-						</Border>
-					</Grid>
-				</TabItem>
-				<TabItem Header="语言">
-					<ScrollViewer>
-						<ItemsControl ItemsSource="{Binding Path=Languages}">
-							<ItemsControl.ItemTemplate>
-								<DataTemplate>
-									<CheckBox Content="{Binding Path=Title}"
-											  IsChecked="{Binding Path=IsSelected,Mode=TwoWay}" />
-								</DataTemplate>
-							</ItemsControl.ItemTemplate>
-						</ItemsControl>
-					</ScrollViewer>
-				</TabItem>
-			</TabControl>
-		</DockPanel>
-		<StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Right">
-			<Button Command="{Binding Path=LoadConfigCommand}">导入配置</Button>
-			<Button Command="{Binding Path=ExportConfigCommand}">导出配置</Button>
-			<Button Command="{Binding Path=DoDownloadCommand}">下载</Button>
-		</StackPanel>
-	</Grid>
-    </dialogHostAvalonia:DialogHost>
+	<dialogHostAvalonia:DialogHost CloseOnClickAway="True">
+		<Grid ColumnDefinitions="Auto * Auto" RowDefinitions="Auto Auto * Auto">
+			<Label Grid.Row="0" Grid.Column="0" Content="VS 版本：" />
+			<ComboBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" ItemsSource="{Binding Path=BootstrapperInfos}"
+					  SelectedItem="{Binding Path=SelectedBootstrapperInfo,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}">
+				<ComboBox.ItemTemplate>
+					<DataTemplate>
+						<TextBlock Text="{Binding Path=Title}" />
+					</DataTemplate>
+				</ComboBox.ItemTemplate>
+			</ComboBox>
+			<Label Grid.Row="1" Grid.Column="0" Content="下载目录：" />
+			<TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=OutputFolderPath}" IsReadOnly="True"
+					 IsEnabled="False" />
+			<Button Grid.Row="1" Grid.Column="2" Command="{Binding Path=SelectFolderCommand}">…</Button>
+			<DockPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" VerticalSpacing="8">
+				<!--<TextBox DockPanel.Dock="Top" />-->
+				<TabControl>
+					<TabItem Header="负载与组件">
+						<Grid>
+							<TreeView ItemsSource="{Binding Path=SelectedBootstrapperInfo.Workloads}"
+									  SelectionMode="Multiple">
+								<TreeView.DataTemplates>
+									<TreeDataTemplate DataType="models:WorkloadInfo"
+													  ItemsSource="{Binding Path=Components}">
+										<CheckBox Content="{Binding Path=Title}" IsEnabled="{Binding Path=IsEnabled}"
+												  IsChecked="{Binding Path=IsSelected,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+									</TreeDataTemplate>
+									<DataTemplate DataType="models:ComponentInfo">
+										<CheckBox IsEnabled="{Binding Path=IsEnabled}"
+												  IsChecked="{Binding Path=IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+											<StackPanel Orientation="Horizontal">
+												<TextBlock Text="{Binding Path=Title}" />
+												<TextBlock Text="必选" IsVisible="{Binding Path=IsRequired}" />
+												<TextBlock Text="推荐" IsVisible="{Binding Path=IsSuggester}" />
+											</StackPanel>
+										</CheckBox>
+									</DataTemplate>
+								</TreeView.DataTemplates>
+							</TreeView>
+							<Border Background="#30000000" IsVisible="{Binding Path=IsLoading}">
+								<StackPanel VerticalAlignment="Center">
+									<ProgressBar IsIndeterminate="True" MaxWidth="200" />
+									<TextBlock Text="加载中……" HorizontalAlignment="Center" />
+								</StackPanel>
+							</Border>
+						</Grid>
+					</TabItem>
+					<TabItem Header="语言">
+						<ScrollViewer>
+							<ItemsControl ItemsSource="{Binding Path=Languages}">
+								<ItemsControl.ItemTemplate>
+									<DataTemplate>
+										<CheckBox Content="{Binding Path=Title}"
+												  IsChecked="{Binding Path=IsSelected,Mode=TwoWay}" />
+									</DataTemplate>
+								</ItemsControl.ItemTemplate>
+							</ItemsControl>
+						</ScrollViewer>
+					</TabItem>
+				</TabControl>
+			</DockPanel>
+			<StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Right">
+				<Button Command="{Binding Path=LoadConfigCommand}">导入配置</Button>
+				<Button Command="{Binding Path=ExportConfigCommand}">导出配置</Button>
+				<Button Command="{Binding Path=DoDownloadCommand}">下载</Button>
+			</StackPanel>
+		</Grid>
+	</dialogHostAvalonia:DialogHost>
 
 </Window>

@@ -24,7 +24,7 @@
 
 		<PlatformTarget>x64</PlatformTarget>
 
-		<AssemblyVersion>1.0.2.0</AssemblyVersion>
+		<AssemblyVersion>1.0.2.1</AssemblyVersion>
 
 		<FileVersion>$(AssemblyVersion)</FileVersion>
 	</PropertyGroup>
@@ -69,6 +69,7 @@
 		<PackageReference Include="Avalonia.Desktop" Version="12.0.3" />
 		<PackageReference Include="Avalonia.Themes.Fluent" Version="12.0.3" />
 		<PackageReference Include="Avalonia.Fonts.Inter" Version="12.0.3" />
+		<PackageReference Include="AvaloniaSourceGenerators" Version="1.0.3" />
 		<PackageReference Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.1">
 			<IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
 			<PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
@@ -82,7 +83,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Avalonia.InternalCheat\src\Avalonia.InternalCheat\Avalonia.InternalCheat.csproj" OutputItemType="Analyzer" />
+		<!--<ProjectReference Include="..\Avalonia.InternalCheat\src\Avalonia.InternalCheat\Avalonia.InternalCheat.csproj" OutputItemType="Analyzer" />-->
 	</ItemGroup>
 
 	<ItemGroup>

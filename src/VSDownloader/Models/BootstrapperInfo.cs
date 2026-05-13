@@ -1,4 +1,4 @@
-using Avalonia.InternalCheat;
+using AvaloniaSourceGenerators;
 using ReactiveUI;
 
 namespace VSDownloader.Models;
@@ -8,7 +8,7 @@ public partial class BootstrapperInfo(string title, string downloaderUrl) : Reac
     public string Title { get; } = title;
     public string DownloaderUrl { get; } = downloaderUrl;
 
-    [ObservableProperty] public partial List<WorkloadInfo> Workloads { get; set; } = new();
+    [RaiseAndSetIfChanged] public partial List<WorkloadInfo> Workloads { get; set; } = new();
 
     public List<ComponentInfo> Components => Workloads.SelectMany(x => x.Components).ToList();
 }

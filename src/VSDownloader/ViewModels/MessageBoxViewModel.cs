@@ -1,4 +1,4 @@
-using Avalonia.InternalCheat;
+using AvaloniaSourceGenerators;
 using DialogHostAvalonia;
 using SkiaSharp;
 

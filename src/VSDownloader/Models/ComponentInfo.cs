@@ -1,4 +1,4 @@
-using Avalonia.InternalCheat;
+using AvaloniaSourceGenerators;
 using ReactiveUI;
 using Russkyc.Messaging;
 
@@ -15,7 +15,7 @@ public partial class ComponentInfo(string id, string title, bool isRequired, boo
     public bool IsSuggester { get; set; } = isSuggester;
     public WorkloadInfo Owner { get; } = owner;
 
-    [ObservableProperty] public partial bool IsSelected { get; set; }
+    [RaiseAndSetIfChanged] public partial bool IsSelected { get; set; }
 
     partial void OnIsSelectedChanged()
     {

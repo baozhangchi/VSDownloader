@@ -1,7 +1,4 @@
 <Solution>
-  <Folder Name="/Avalonia.InternalCheat/">
-    <Project Path="Avalonia.InternalCheat/src/Avalonia.InternalCheat/Avalonia.InternalCheat.csproj" />
-  </Folder>
   <Folder Name="/libs/">
     <File Path="libs/av_libglesv2.lib" />
     <File Path="libs/libHarfBuzzSharp.lib" />

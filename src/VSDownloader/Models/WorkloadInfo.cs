@@ -1,4 +1,4 @@
-using Avalonia.InternalCheat;
+using AvaloniaSourceGenerators;
 using ReactiveUI;
 using Russkyc.Messaging;
 
@@ -14,7 +14,7 @@ public partial class WorkloadInfo(string id, string title, BootstrapperInfo boot
 
     public bool IsEnabled => !IsRequired;
 
-    [ObservableProperty] public partial bool IsSelected { get; set; } = false;
+    [RaiseAndSetIfChanged] public partial bool IsSelected { get; set; } = false;
     public BootstrapperInfo BootstrapperInfo { get; } = bootstrapperInfo;
 
     partial void OnIsSelectedChanged()

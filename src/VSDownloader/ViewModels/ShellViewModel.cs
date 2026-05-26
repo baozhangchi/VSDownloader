@@ -29,16 +29,6 @@ public partial class ShellViewModel : ViewModelBase
     {
         WeakReferenceMessenger.Default.Register<ShellViewModel, ComponentInfo>(this, HandleComponentSelectedChanged);
         WeakReferenceMessenger.Default.Register<ShellViewModel, WorkloadInfo>(this, HandleWorkloadSelectedChanged);
-        //var buffer = Resources.BootstrapperInfos;
-        //using (var ms = new MemoryStream(buffer))
-        //{
-        //    using var gzip = new GZipStream(ms, CompressionMode.Decompress);
-        //    using var reader = new StreamReader(gzip, Encoding.UTF8);
-        //    var originContent = reader.ReadToEnd();
-        //    BootstrapperInfos =
-        //        JsonSerializer.Deserialize<List<BootstrapperInfo>>(originContent,
-        //            JsonGenerationContext.Default.ListBootstrapperInfo)!;
-        //}
         BootstrapperInfos = VSHelper.LoadBootstrapperInfos();
 
         _canLoad = this.WhenAnyValue<ShellViewModel, bool, BootstrapperInfo?>(x => x.SelectedBootstrapperInfo,
@@ -219,7 +209,7 @@ public partial class ShellViewModel : ViewModelBase
     [ReactiveCommand(CanExecute = nameof(_canDoDownload))]
     private async Task DoDownload()
     {
-        if (!File.Exists(_bootstrapperFileName))
+        if (File.Exists(_bootstrapperFileName))
         {
             File.Delete(_bootstrapperFileName);
         }
